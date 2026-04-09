@@ -193,18 +193,7 @@ Sending the same key again within 24 hours returns the **original response** wit
 
 ---
 
-## Concurrency & Idempotency Design
 
-### Overbooking Prevention (two-layer strategy)
-
-1. **Pessimistic write lock** — `SELECT ... FOR UPDATE` on the event row prevents two transactions from concurrently reading the same `bookedSeats` value and both deciding there is capacity.
-2. **Optimistic lock** — `@Version` on `Event` provides a safety net: any stale write (e.g. bypassing JPA) causes an `ObjectOptimisticLockingFailureException`, returned as HTTP `409 Conflict`.
-
-### Idempotency
-
-Booking requests may include `X-Idempotency-Key`. The key maps to the serialised response in Redis with a 24-hour TTL. Duplicate requests short-circuit before hitting business logic.
-
----
 
 ## Soft Delete
 
